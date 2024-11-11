@@ -1,8 +1,42 @@
 # Holochain Workflows
 
-## Cell Workflows:
+> [!IMPORTANT]  
+> Code snippets used in this document do not fully reflect the actual implementation in holochain.
 
-_Using pesudocode_
+### Table of Contents
+
+- [Holochain Workflows](#holochain-workflows)
+- [Cell Workflows](#cell-workflows)
+  - [Initialization Flow](#1-initialization-flow)
+  - [WASM Call Flow](#2-wasm-call-flow)
+  - [DHT Operations Flow](#3-dht-operations-flow)
+  - [Network Flow](#4-network-flow-handles-all-network-communication)
+  - [Query Flow](#5-query-flow-how-data-is-retrieved)
+  - [Key things to note](#6-key-things-to-note)
+- [Validation limbo](#validation-limbo)
+  - [Why Entries Enter Limbo](#why-entries-enter-limbo)
+  - [The Limbo Process](#the-limbo-process)
+  - [Real World Example](#real-world-example)
+  - [Common Scenarios](#common-scenarios)
+- [Dependencies in validation](#dependencies-in-validation)
+  - [Chain Dependencies](#chain-dependencies)
+  - [Reference Dependencies](#reference-dependencies)
+  - [Agent Dependencies](#agent-dependencies)
+  - [Custom Validation Dependencies](#custom-validation-dependencies)
+- [Startup](#startup)
+  - [Key Components](#key-components)
+- [Check for Running hApps](#check-for-running-happs)
+  - [Key Components](#key-components-1)
+- [hApp Installation and Genesis](#happ-installation-and-genesis)
+  - [Key Components](#key-components-2)
+- [DNA Installation](#dna-installation)
+  - [Key Components](#key-components-3)
+- [Zome Call](#zome-call)
+  - [Key Components](#key-components-4)
+- [Validation Operations](#validation-operations)
+  - [Key Components](#key-components-5)
+
+## Cell Workflows
 
 ```mermaid
 graph TD
@@ -60,7 +94,7 @@ graph TD
 
 ```
 
-1. Initialization Flow:
+#### 1. Initialization Flow
 
 - Genesis happens when a cell is first activated
 - This creates the initial source chain with DNA and Agent key entries
@@ -82,7 +116,7 @@ struct InitializationFlow {
 }
 ```
 
-2. WASM Call Flow:
+#### 2. WASM Call Flow
 
 - App/client makes a zome function call
 - Conductor sets up the WASM environment (Ribosome)
@@ -110,7 +144,7 @@ struct WasmCallFlow {
 }
 ```
 
-3. DHT Operations Flow:
+#### 3. DHT Operations Flow
 
 - When new data needs to be published to the DHT:
   - System validation checks integrity, signatures, etc.
@@ -137,7 +171,7 @@ struct DhtOpFlow {
 }
 ```
 
-4. Network Flow (handles all network communication):
+#### 4. Network Flow (handles all network communication)
 
 - Remote Zome Calls:
 
@@ -180,7 +214,7 @@ struct NetworkFlow {
 }
 ```
 
-5. Query Flow (how data is retrieved):
+#### 5. Query Flow (how data is retrieved)
 
 - Check local cache first (fastest)
 - Look in local source chain
@@ -205,7 +239,7 @@ struct QueryFlow {
 }
 ```
 
-### Key things to note:
+### Key things to note
 
 - These workflows interact constantly
 - Each has its own validation requirements
@@ -213,7 +247,7 @@ struct QueryFlow {
 - Network operations are asynchronous
 - Everything is validated before integration
 
-### validation limbo
+### Validation Limbo
 
 Validation limbo happens when an operation (op) is waiting for its dependencies to be validated before it can be validated itself. This is a crucial part of Holochain's dependency-aware validation system.
 
@@ -264,14 +298,14 @@ graph TD
 
 Here's what's happening:
 
-1. Why Entries Enter Limbo:
+#### 1. Why Entries Enter Limbo:
 
 - Missing previous source chain entries
 - Missing linked entries
 - Missing entries referenced in the validation callback
 - Missing agent activity for validation context
 
-2. The Limbo Process:
+#### 2. The Limbo Process:
 
 ```
 Receive Op -> Check Dependencies -> If Missing:
@@ -282,7 +316,7 @@ Receive Op -> Check Dependencies -> If Missing:
    |-> Either Timeout or Proceed when Dependencies Arrive
 ```
 
-3. Real World Example:
+#### 3. Real World Example:
 
 ```rust
 // An entry that references another entry
@@ -298,7 +332,7 @@ Receive Op -> Check Dependencies -> If Missing:
 // 4. Then validates this entry
 ```
 
-4. Common Scenarios:
+#### 4. Common Scenarios:
 
 - Chain gaps (missing entries in sequence)
 - Cross-references between entries
@@ -350,7 +384,7 @@ graph TD
 
 Dependencies in validation are:
 
-1. Chain Dependencies:
+#### 1. Chain Dependencies:
 
 - Each entry must reference valid previous entries
 - Headers must form an unbroken chain
@@ -380,14 +414,14 @@ struct MyEntry {
 }
 ```
 
-3. Agent Dependencies:
+#### 3. Agent Dependencies:
 
 - Valid agent public key
 - Agent must be active in DHT
 - Authority to perform actions
 - Previous agent activity required for context
 
-4. Custom Validation Dependencies:
+#### 4. Custom Validation Dependencies:
 
 ```rust
 #[hdk_extern]
