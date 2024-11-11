@@ -1,0 +1,31 @@
+flowchart TB
+    subgraph "App Installation"
+        A[Install App Request] --> B[Process DNA Files]
+        B --> C[Store WASM/DNA Records]
+        C --> D[Create Cell ID]
+        D --> E{Start Now?}
+        E -->|No| F[Store Install Record]
+        F --> G[Wait for Start Command]
+    end
+
+    subgraph "Cell Start Process"
+        H[Start Cell Command] --> I{Genesis Exists?}
+        I -->|No| J[Perform Genesis]
+        I -->|Yes| K[Load Existing State]
+        
+        J --> L[Create Genesis Entries]
+        L --> M[Run Init Callbacks]
+        M --> N[Join DHT]
+        
+        K --> N
+        N --> O[Cell Running]
+    end
+
+    E -->|Yes| H
+    G --> H
+
+    style C fill:#87CEEB,stroke:#333,stroke-width:2px
+    style F fill:#87CEEB,stroke:#333,stroke-width:2px
+    style J fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style L fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style M fill:#FFB6C1,stroke:#333,stroke-width:2px

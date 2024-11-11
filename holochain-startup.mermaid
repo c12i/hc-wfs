@@ -1,0 +1,31 @@
+flowchart TB
+    A[Start Holochain Binary] --> B[Load Config Files]
+    B --> C[Connect to Lair Keystore]
+    
+    C -->|Not Running| D[Start Lair Process]
+    C -->|Running| E[Unlock Lair]
+    
+    D --> E
+    E -->|Failed| F[Wait for Passphrase]
+    F --> E
+    
+    E -->|Success| G[Initialize SQLite Databases]
+    G --> H[Setup Networking Layer]
+    H --> I[Initialize Conductor]
+    I --> J[Start Admin Interface]
+    J --> K[Load DNA Files]
+    K --> L[Create Cell Instances]
+    L -->|Get Agent Keys| M[Query Lair for Keys]
+    M --> N{Check for Running Apps}
+    N -->|Yes| O[Start App Interface]
+    N -->|No| P[Wait for Admin Commands]
+    O --> Q[Start WebSocket Interface]
+    P --> Q
+    Q --> R[Ready for Connections]
+
+    style C fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#f9f,stroke:#333,stroke-width:2px
+    style E fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#f9f,stroke:#333,stroke-width:2px
+    style M fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#87CEEB,stroke:#333,stroke-width:2px

@@ -1,0 +1,58 @@
+flowchart TB
+    A[Admin Install App Request] --> B{Check Bundle Type}
+    
+    B -->|.happ| C[Extract hApp Bundle]
+    B -->|.web-happ| D[Extract Web-hApp Bundle]
+    
+    C --> E[Read hApp Manifest]
+    D --> F[Read Web-hApp Manifest]
+    
+    F --> G[Extract UI Assets]
+    F --> E
+    G --> H[Store UI in App UI Store]
+    
+    E --> I[For Each DNA Resource]
+    I --> J{DNA Format}
+    
+    J -->|Path| K[Read DNA File]
+    J -->|Bundled| L[Extract DNA]
+    J -->|Hash| M[Fetch from DB]
+    
+    K --> N[Hash DNA]
+    L --> N
+    M --> O[Verify Hash]
+    
+    N --> P{DNA in Database?}
+    O --> Q[Use Existing DNA]
+    
+    P -->|No| R[Store DNA in DB]
+    P -->|Yes| Q
+    
+    R --> S[Create Cell ID]
+    Q --> S
+    
+    S --> T{Agent Key Check}
+    T -->|Create New| U[Request Lair Generate Key]
+    T -->|Use Existing| V[Verify Key in Lair]
+    
+    U --> W[Register Agent Key]
+    V --> W
+    
+    W --> X[Initialize Cell]
+    X --> Y[Store App Record in SQLite]
+    
+    Y --> Z{Start App?}
+    Z -->|Yes| AA[Start App Interface]
+    Z -->|No| AB[Mark as Installed]
+    
+    H --> AC[Configure UI Access]
+    AA --> AC
+    AB --> AD[Ready for Use]
+    AC --> AD
+
+    style U fill:#f9f,stroke:#333,stroke-width:2px
+    style V fill:#f9f,stroke:#333,stroke-width:2px
+    style W fill:#f9f,stroke:#333,stroke-width:2px
+    style R fill:#87CEEB,stroke:#333,stroke-width:2px
+    style Y fill:#87CEEB,stroke:#333,stroke-width:2px
+    style H fill:#90EE90,stroke:#333,stroke-width:2px

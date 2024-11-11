@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph "Entry Point"
+        A[App Interface Call] --> B[Call Validation]
+        B --> C[Serialize Input]
+    end
+
+    subgraph "Conductor Layer"
+        C --> D[Route to Cell]
+        D --> E[Build Host Context]
+        E --> F[Prepare Ribosome]
+    end
+
+    subgraph "WASM Execution"
+        F --> G[Initialize WASM]
+        G --> H[Call Zome Function]
+        
+        H --> I{Host Function Called?}
+        I -->|Yes| J[Suspend WASM]
+        J --> K[Execute Host Function]
+        K --> L[Resume WASM]
+        L --> I
+        
+        I -->|No| M[Complete Function]
+    end
+
+    subgraph "State Management"
+        K --> N[Source Chain Ops]
+        N --> O[DHT Ops Queue]
+    end
+
+    subgraph "Return Flow"
+        M --> P[Serialize Output]
+        P --> Q[Clean Resources]
+        Q --> R[Return Result]
+    end
+
+    style B fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style E fill:#90EE90,stroke:#333,stroke-width:2px
+    style F fill:#F0E68C,stroke:#333,stroke-width:2px
+    style H fill:#F0E68C,stroke:#333,stroke-width:2px
+    style K fill:#90EE90,stroke:#333,stroke-width:2px
+    style N fill:#87CEEB,stroke:#333,stroke-width:2px
+    style O fill:#87CEEB,stroke:#333,stroke-width:2px
+

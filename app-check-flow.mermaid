@@ -1,0 +1,23 @@
+flowchart TB
+    A[Check for Running Apps] --> B[Query SQLite State DB]
+    B --> C{Apps Found?}
+    
+    C -->|Yes| D[For Each App]
+    C -->|No| E[Wait for Admin Commands]
+    
+    D --> F{Check App Status}
+    F -->|Running| G[Load App Configuration]
+    F -->|Disabled/Paused| H[Skip App]
+    
+    G --> I[Verify DNA Integrity]
+    I -->|Success| J[Start App Interface]
+    I -->|Failure| K[Mark App as Error]
+    
+    J --> L[Configure Network Interfaces]
+    L --> M[Initialize App Websocket]
+    
+    H --> N[Ready for Admin Commands]
+    K --> N
+    M --> O[Ready for Connections]
+
+    style B fill:#87CEEB,stroke:#333,stroke-width:2px

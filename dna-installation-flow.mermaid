@@ -1,0 +1,20 @@
+flowchart TB
+    A[Read .dna file] --> B[Parse DNA Manifest]
+    B --> C[Extract WASM]
+    B --> D[Extract DNA Manifest]
+    
+    C --> E[Hash WASM]
+    D --> F[Process DNA Properties]
+    
+    E --> G{WASM in Database?}
+    G -->|No| H[Store WASM in SQLite]
+    G -->|Yes| I[Use Existing WASM]
+    
+    F --> J[Create DNA Record]
+    H --> J
+    I --> J
+    
+    J --> K[Store DNA Record]
+    
+    style H fill:#87CEEB,stroke:#333,stroke-width:2px
+    style K fill:#87CEEB,stroke:#333,stroke-width:2px

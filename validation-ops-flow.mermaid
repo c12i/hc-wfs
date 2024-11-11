@@ -1,0 +1,40 @@
+flowchart TB
+    subgraph "Source Chain Operation"
+        A[Zome Function] --> B[Create Entry/Link]
+        B --> C[Validate Create]
+        C --> D[Queue Source Chain Ops]
+        D --> E[Queue DHT Ops]
+    end
+
+    subgraph "DHT Operations Queue"
+        E --> F[Store Pending Ops]
+        F --> G{Op Type?}
+        G -->|StoreEntry| H[Store Entry Op]
+        G -->|StoreRecord| I[Store Record Op]
+        G -->|RegisterAgentActivity| J[Register Activity Op]
+        G -->|CreateLink| K[Create Link Op]
+    end
+
+    subgraph "Network Layer"
+        H & I & J & K --> L[Schedule Op Broadcast]
+        L --> M[Send to Neighbors]
+        M --> N[Receive Op]
+    end
+
+    subgraph "Validation Flow"
+        N --> O[Queue Validation]
+        O --> P[Run Validation Callback]
+        P --> Q{Valid?}
+        Q -->|Yes| R[Accept & Store]
+        Q -->|No| S[Reject & Warn]
+        
+        R --> T[Add to Integrated Ops]
+        S --> U[Add to Invalid Ops]
+    end
+
+    style C fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style P fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style D fill:#87CEEB,stroke:#333,stroke-width:2px
+    style E fill:#87CEEB,stroke:#333,stroke-width:2px
+    style F fill:#87CEEB,stroke:#333,stroke-width:2px
+    style R fill:#87CEEB,stroke:#333,stroke-width:2px
