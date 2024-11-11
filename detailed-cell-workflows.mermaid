@@ -1,0 +1,52 @@
+graph TD
+    subgraph "Initialization Flow"
+        A1[DNA Activation] --> A2[Genesis]
+        A2 --> A3[Initialize Zomes]
+        A3 --> A4[First Run Setup]
+        A4 --> A5[Cell Ready State]
+    end
+
+    subgraph "WASM Call Flow"
+        B1[Zome Function Call] --> B2[WASM Ribosome Setup]
+        B2 --> B3[Host Function Bridge]
+        B3 --> B4[Source Chain Ops]
+        B4 --> B5[Generate DHT Ops]
+        B5 --> B6[Return Results]
+    end
+
+    subgraph "DHT Operations Flow"
+        C1[Publish Entry/Link] --> C2[Queue DHT Op]
+        C2 --> C3[System Validation]
+        C3 --> C4[WASM Validation]
+        C4 --> C5[App Validation]
+        C5 --> C6[Integration Process]
+        C6 --> C7[Store Valid Op]
+        C7 --> C8[Send Validation Receipt]
+    end
+
+    subgraph "Network Flow"
+        D1[Remote Call Request] --> D2[Handle Remote Zome Call]
+        D2 --> D3[Process Direct Message]
+        
+        D4[Gossip Request] --> D5[Handle Get Request]
+        D5 --> D6[Handle Get Links]
+        D6 --> D7[Handle Validation Receipt]
+        
+        D8[Publish Request] --> D9[Handle Publish]
+        D9 --> D10[Disseminate Warrant]
+    end
+
+    subgraph "Query Flow"
+        E1[Get Query] --> E2[Check Local Cache]
+        E2 --> E3[Check Local Source Chain]
+        E3 --> E4[Check DHT Cache]
+        E4 --> E5[Query Network Peers]
+        E5 --> E6[Build Response]
+    end
+
+    style B2 fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style B3 fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style C4 fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style E2 fill:#4ECDC4,stroke:#333,stroke-width:2px
+    style E3 fill:#4ECDC4,stroke:#333,stroke-width:2px
+    style E4 fill:#4ECDC4,stroke:#333,stroke-width:2px
