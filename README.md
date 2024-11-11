@@ -306,6 +306,104 @@ Receive Op -> Check Dependencies -> If Missing:
 - Dependencies on agent activity
 - Complex validation rules requiring other data
 
+### what are dependencies in the context of validation
+
+```mermaid
+graph TD
+    subgraph "Types of Dependencies"
+        A[Source Chain Sequence]
+        B[Referenced Entries]
+        C[Linked Entries]
+        D[Agent Activity]
+    end
+
+    subgraph "Dependency Examples"
+        A --> E[Previous Headers Must Exist]
+        A --> F[Previous Entries Must Be Valid]
+
+        B --> G[Entry References Other Entries]
+        B --> H[Entry Updates Previous Entry]
+
+        C --> I[Link Target Must Exist]
+        C --> J[Link Base Must Exist]
+
+        D --> K[Agent Must Be Active]
+        D --> L[Agent Authority Check]
+    end
+
+    subgraph "Validation Context"
+        M[Must Have All Dependencies]
+        N[Missing Dependencies = Limbo]
+        O[Dependencies Must Be Valid]
+
+        M --> P[Complete Validation Context]
+        N --> Q[Request Missing Dependencies]
+        O --> R[Cascade Validation]
+    end
+
+    style E fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style F fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style G fill:#87CEEB,stroke:#333,stroke-width:2px
+    style H fill:#87CEEB,stroke:#333,stroke-width:2px
+
+```
+
+Dependencies in validation are:
+
+1. Chain Dependencies:
+
+- Each entry must reference valid previous entries
+- Headers must form an unbroken chain
+- Sequence numbers must be continuous
+
+```rust
+// Example chain dependency
+struct Header {
+    previous_header: HeaderHash,  // Must exist and be valid
+    sequence_number: u32,        // Must be previous + 1
+    // ...
+}
+```
+
+2. Reference Dependencies:
+
+- When one entry refers to another entry
+- Updates to existing entries
+- Links between entries
+
+```rust
+// Example entry with dependencies
+struct MyEntry {
+    references: Vec<EntryHash>,  // All must exist
+    updates: Option<EntryHash>,  // Must exist if present
+    // ...
+}
+```
+
+3. Agent Dependencies:
+
+- Valid agent public key
+- Agent must be active in DHT
+- Authority to perform actions
+- Previous agent activity required for context
+
+4. Custom Validation Dependencies:
+
+```rust
+#[hdk_extern]
+fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
+    // Example: Entry depends on other entry existing
+    let other_entry = must_get_valid_record(op.references.other_hash)?;
+
+    if other_entry.is_none() {
+        return Ok(ValidateCallbackResult::UnresolvedDependencies(
+            vec![op.references.other_hash]
+        ));
+    }
+    // ... rest of validation
+}
+```
+
 ## Startup
 
 ```mermaid
