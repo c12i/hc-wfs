@@ -145,16 +145,26 @@ struct DhtOpFlow {
   - Process through local WASM
   - Return results
 
+> [!NOTE]
+> Remote zome calls allow one agent to execute functions on another agent's cell, subject to capability grants, enabling secure peer-to-peer interactions in Holochain applications.
+
 - Gossip Protocol:
 
   - Regular exchange of metadata
   - Request missing data
   - Share validation receipts
 
+> [!NOTE]
+> Gossip requests are automatic peer-to-peer exchanges where agents compare notes about what data they have or are missing, helping the DHT network self-heal and maintain data availability over time.
+
 - DHT Operations:
+
   - Publish new entries/links
   - Handle incoming validation requests
   - Disseminate warrants
+
+> [!NOTE]
+> A publish request is how agents share new entries or links to the DHT, requiring validation from multiple peers through system, app, and WASM validation checks before integration into the network.
 
 ```rust
 // Network message handling
