@@ -203,6 +203,99 @@ struct QueryFlow {
 - Network operations are asynchronous
 - Everything is validated before integration
 
+### validation limbo
+
+Validation limbo happens when an operation (op) is waiting for its dependencies to be validated before it can be validated itself. This is a crucial part of Holochain's dependency-aware validation system.
+
+```mermaid
+graph TD
+    subgraph "Entry Validation Request"
+        A[New Op Received] --> B{Check Dependencies}
+        B -->|Missing Deps| C[Enter Validation Limbo]
+        B -->|Deps Present| D[Proceed to Validation]
+
+        C --> E[Request Missing Dependencies]
+        E --> F[Wait in Limbo Queue]
+
+        F --> G{Dependencies Arrived?}
+        G -->|No| H[Stay in Limbo]
+        G -->|Yes| I[Resume Validation]
+
+        H --> J[Retry After Timeout]
+        J --> F
+
+        I --> K[Run Validation]
+        D --> K
+    end
+
+    subgraph "Dependencies States"
+        L[Unresolved Dependencies]
+        M[Pending Dependencies]
+        N[Resolved Dependencies]
+
+        L --> M
+        M --> N
+    end
+
+    subgraph "Timeout Handling"
+        O[Check Limbo Age]
+        P[Abandon if Too Old]
+        Q[Schedule Revalidation]
+
+        O --> P
+        O --> Q
+    end
+
+    style C fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style F fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style H fill:#FFB6C1,stroke:#333,stroke-width:2px
+
+```
+
+Here's what's happening:
+
+1. Why Entries Enter Limbo:
+
+- Missing previous source chain entries
+- Missing linked entries
+- Missing entries referenced in the validation callback
+- Missing agent activity for validation context
+
+2. The Limbo Process:
+
+```
+Receive Op -> Check Dependencies -> If Missing:
+   |-> Put in Limbo Queue
+   |-> Request Missing Dependencies
+   |-> Wait for Dependencies
+   |-> Periodically Retry
+   |-> Either Timeout or Proceed when Dependencies Arrive
+```
+
+3. Real World Example:
+
+```rust
+// An entry that references another entry
+{
+    previous_entry: EntryHash,  // Must exist
+    content: "My new data"
+}
+
+// If previous_entry isn't validated yet:
+// 1. This entry goes to limbo
+// 2. System requests previous_entry
+// 3. Waits for previous_entry to be validated
+// 4. Then validates this entry
+```
+
+4. Common Scenarios:
+
+- Chain gaps (missing entries in sequence)
+- Cross-references between entries
+- Links to unvalidated entries
+- Dependencies on agent activity
+- Complex validation rules requiring other data
+
 ## Startup
 
 ```mermaid
