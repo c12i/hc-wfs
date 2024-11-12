@@ -689,6 +689,9 @@ flowchart TB
 
 ## Validation Operations
 
+> [!NOTE]
+> Operations (Ops) in Holochain are atomic units of change that need to be processed and validated by the DHT network, representing actions like storing entries, creating links, or registering agent activity.
+
 ```mermaid
 flowchart TB
     subgraph "Source Chain Operation"
