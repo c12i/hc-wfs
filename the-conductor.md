@@ -169,8 +169,6 @@ pub struct CellItem {
     cell: Arc<Cell>,
     // Cell's current status
     status: CellStatus,
-    // Handles to running cell tasks
-    tasks: Vec<JoinHandle<()>>,
 }
 
 /// Concurrent access to cell map
