@@ -1,0 +1,49 @@
+flowchart TB
+    A[Conductor]
+    
+    subgraph "Core State"
+        B1[Running Cells]
+        B2[Config]
+        B3[Spaces]
+    end
+    
+    subgraph "Services & Interfaces"
+        C1[Admin Websocket Ports]
+        C2[Task Manager]
+        C3[Keystore Client]
+        C4[P2P Network]
+        C5[Running Services]
+    end
+    
+    subgraph "WASM & Execution"
+        D1[Ribosome Store]
+        D2[Wasmer Module Cache]
+        D3[Post Commit Handler]
+    end
+    
+    subgraph "App Management"
+        E1[App Auth Tokens]
+        E2[App Broadcast]
+    end
+
+    A --> B1
+    A --> B2
+    A --> B3
+    
+    A --> C1
+    A --> C2
+    A --> C3
+    A --> C4
+    A --> C5
+    
+    A --> D1
+    A --> D2
+    A --> D3
+    
+    A --> E1
+    A --> E2
+
+    style B1 fill:#87CEEB,stroke:#333,stroke-width:2px
+    style C4 fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style D1 fill:#F0E68C,stroke:#333,stroke-width:2px
+    style D2 fill:#F0E68C,stroke:#333,stroke-width:2px

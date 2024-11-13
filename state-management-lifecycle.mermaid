@@ -1,0 +1,58 @@
+flowchart TB
+    subgraph "Persistence Layers"
+        A[State Storage]
+        
+        B[SQLite]
+        B1[Source Chain]
+        B2[DHT Ops]
+        B3[Cache Data]
+        B --> B1
+        B --> B2
+        B --> B3
+        
+        C[File System]
+        C1[Conductor Config]
+        C2[DNA Files]
+        C3[WASM Cache]
+        C --> C1
+        C --> C2
+        C --> C3
+        
+        D[Lair Keystore]
+        D1[Agent Keys]
+        D2[Signatures]
+        D --> D1
+        D --> D2
+    end
+
+    subgraph "State Updates"
+        E[Update Triggers]
+        E1[Zome Calls]
+        E2[Network Messages]
+        E3[Admin Commands]
+        E4[System Events]
+        E --> E1
+        E --> E2
+        E --> E3
+        E --> E4
+    end
+
+    subgraph "Recovery Mechanisms"
+        F[Recovery Processes]
+        F1[Bootstrap from Network]
+        F2[Rebuild from Source Chain]
+        F3[Restore from Backup]
+        F4[Peer Recovery]
+        F --> F1
+        F --> F2
+        F --> F3
+        F --> F4
+    end
+
+    A --> B
+    A --> C
+    A --> D
+
+    style B fill:#87CEEB,stroke:#333,stroke-width:2px
+    style D fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style E fill:#90EE90,stroke:#333,stroke-width:2px

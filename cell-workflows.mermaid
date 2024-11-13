@@ -1,0 +1,31 @@
+flowchart TB
+    subgraph "Agent State"
+        A[Genesis] --> B[Initialize Zomes]
+        B --> C[Cell ZomeFn]
+        C --> D[WASM Application Processing]
+    end
+
+    subgraph "DHT Operations"
+        E[Publish to DHT] --> F[Integration Process]
+        F --> G[WASM Validation]
+        G --> H[System Validation]
+        H --> I[App Validation]
+    end
+
+    subgraph "Network Handling"
+        J[Remote Zome Calls] --> K[Handle Network Messages]
+        K --> L[Gossip/DHT Ops]
+        L --> M[Validation Receipt]
+    end
+
+    subgraph "Data Storage"
+        N[Source Chain] --> O[Cell State]
+        O --> P[DHT Cache]
+        P --> Q[Cascade Query]
+    end
+
+    style D fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style G fill:#FF6B6B,stroke:#333,stroke-width:2px
+    style N fill:#4ECDC4,stroke:#333,stroke-width:2px
+    style P fill:#4ECDC4,stroke:#333,stroke-width:2px
+

@@ -1,0 +1,61 @@
+flowchart TB
+    subgraph "Network Layer"
+        A[HolochainP2pRef]
+        
+        B[Kitsune P2P]
+        B1[Peer Discovery]
+        B2[Gossip Protocol]
+        B3[Direct Messaging]
+        A --> B
+        B --> B1
+        B --> B2
+        B --> B3
+        
+        C[Network Operations]
+        C1[Publish Data]
+        C2[Get Data]
+        C3[Remote Call]
+        C4[Validate Data]
+        A --> C
+        C --> C1
+        C --> C2
+        C --> C3
+        C --> C4
+    end
+
+    subgraph "Communication Interfaces"
+        D[Interfaces]
+        D1[Admin Interface]
+        D2[App Interface]
+        D3[Signal Broadcasting]
+        D --> D1
+        D --> D2
+        D --> D3
+        
+        E[WebSocket Servers]
+        E1[Admin Port: 4444]
+        E2[App Ports: Dynamic]
+        D --> E
+        E --> E1
+        E --> E2
+    end
+
+    subgraph "P2P Communication Types"
+        F[Message Types]
+        F1[Get Links]
+        F2[Get Entry]
+        F3[Publish Op]
+        F4[Remote Zome Call]
+        F5[Validation Receipt]
+        F --> F1
+        F --> F2
+        F --> F3
+        F --> F4
+        F --> F5
+    end
+
+    style B fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style C fill:#FFB6C1,stroke:#333,stroke-width:2px
+    style D fill:#90EE90,stroke:#333,stroke-width:2px
+    style F fill:#87CEEB,stroke:#333,stroke-width:2px
+

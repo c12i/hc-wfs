@@ -1,0 +1,9 @@
+flowchart TD
+    A[Start Verification] --> B[Compute Challenge c]
+    B --> C[Compute LHS: s * G]
+    B --> D[Compute RHS: t + c * y]
+    C --> E[Compare LHS = RHS]
+    D --> E
+    E --> F{Equal?}
+    F -->|Yes| G[Proof Valid]
+    F -->|No| H[Proof Invalid]

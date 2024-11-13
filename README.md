@@ -99,7 +99,6 @@ graph TD
 - Genesis happens when a cell is first activated
 - This creates the initial source chain with DNA and Agent key entries
 - Zomes are initialized in sequence
-- Any init callbacks defined in the zomes are run
 - Cell enters "ready" state for regular operation
 
 ```rust
